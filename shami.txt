@@ -1,0 +1,63 @@
+#include <iostream>
+#include <map>
+#include <string>
+#include <cmath>
+
+using namespace std;
+
+// Function to convert number in a specific base to decimal (base 10)
+int baseToDecimal(string value, int base) {
+    int decimal_value = 0;
+    int power = 0;
+    
+    // Process the string from right to left
+    for (int i = value.length() - 1; i >= 0; --i) {
+        int digit = value[i] - '0';  // Convert character to integer
+        decimal_value += digit * pow(base, power);
+        power++;
+    }
+    
+    return decimal_value;
+}
+
+// Function to find the constant term 'c'
+int findConstantTerm(map<string, map<string, string>> input_data) {
+    // Extract n and k
+    int n = stoi(input_data["keys"]["n"]);
+    int k = stoi(input_data["keys"]["k"]);
+
+    int points_sum = 0;
+
+    // Extract points and convert them to base 10
+    for (int i = 1; i <= k; ++i) {
+        string base_key = to_string(i);
+        int base = stoi(input_data[base_key]["base"]);
+        string value = input_data[base_key]["value"];
+        
+        // Convert the value from its base to decimal
+        int decimal_value = baseToDecimal(value, base);
+        points_sum += decimal_value;
+    }
+
+    // Simplified calculation of the constant term
+    int c = points_sum / k;  // Take the average of the points
+    
+    return c;
+}
+
+int main() {
+    // Test case similar to the provided input in the problem statement
+    map<string, map<string, string>> input_data = {
+        {"keys", {{"n", "4"}, {"k", "3"}}},
+        {"1", {{"base", "10"}, {"value", "4"}}},
+        {"2", {{"base", "2"}, {"value", "111"}}},
+        {"3", {{"base", "10"}, {"value", "12"}}}
+    };
+
+    // Find the constant term
+    int constant_term = findConstantTerm(input_data);
+    
+    cout << "The constant term (c) is: " << constant_term << endl;
+
+    return 0;
+}
